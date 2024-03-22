@@ -1,4 +1,4 @@
-Welcome to UVRSABI's Documentation!
+Drone Based Civil Structure Inspection !
 ===================================
 
 The world in which we currently live is well equipped with a variety of conventional methods for analysing and assessing the geometry and state of civil structures. Buildings that don't conform to seismic structural requirements run the risk of imposing serious damages. The vulnerability of a building to earthquake can be assessed through inspection that takes into account the expected damage progression of the associated component and the component’s contribution to structural system performance.

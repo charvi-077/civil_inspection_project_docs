@@ -99,3 +99,18 @@ For estimating the roof layout, the UAV was flown with a downward-facing camera 
     
     <p align = "center"><iframe src="https://drive.google.com/file/d/1Gu5oBJhCOV7ZOCrYVbju0ubeuobGXeur/preview" width="560" height="315" allow="autoplay"></iframe></p>
     <p align = "center"> Data Collection for Roof Layout Estimation </p>
+
+
+Crack Detection 
+-----------------------------------
+
+
+
+Window Detection and Storey Count 
+---------------------------------------
+
+
+
+
+
+

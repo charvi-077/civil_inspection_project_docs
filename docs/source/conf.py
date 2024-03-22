@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'Lumache'
+project = 'UVRSABI'
 copyright = '2021, Graziella'
 author = 'Graziella'
 
@@ -33,3 +33,4 @@ html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
+

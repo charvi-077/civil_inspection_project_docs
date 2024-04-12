@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'UVRSABI'
+project = 'CIVIL-INSPECTION'
 copyright = '2021, Graziella'
 author = 'Graziella'
 
@@ -33,4 +33,5 @@ html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
+numfig = True
 

@@ -14,25 +14,24 @@ Another dependency for the package is colmap which needs to be installed as foll
 
 **Installing the codebase for all the modules :** 
 
-Clone the `Github repository <https://github.com/UVRSABI/UVRSABI-Code.git>`_ by running the following commands:
+Clone the `Github repository <https://github.com/charvi-077/civil-structure-inspection>`_ by running the following commands:
 
 ..  code-block:: bash 
 
-	$ git clone --recurse-submodules https://github.com/UVRSABI/UVRSABI-Code.git
-	$ git clone https://github.com/Dhruv2012/Drone-based-building-assessment.git
-	$ git clone crack_detection 
+	$ git clone https://github.com/charvi-077/civil-structure-inspection
 
 Once all the above dependencies have been installed, create a conda environment by running the following commands:
 
 ..  code-block:: bash
 
-	$ cd UVRSABI-Code/
-	$ conda env create -f uvrsabi.yaml
-	$ conda activate uvrsabi
+	$ cd civil-structure-inspection
+	$ conda env create -f civil_code.yaml
+	$ conda activate civil_code
 
 
 **Running the Modules:**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Note : All the detailed instructions are given inside README.md of every module on the above github link. 
 
 **Distance Between Adjacent Buildings** 
 
@@ -41,7 +40,7 @@ Once all the above dependencies have been installed, create a conda environment 
 
 ..  code-block:: bash
 
-	$ python3 ../utils/VideoToImage.py
+	$ python3 ./utils/VideoToImage.py
 
 3. Follow the Colmap tutorial page to 3D resconstruct the scene from respective mode.
 4. With respect to the mode, run the below command
@@ -68,22 +67,22 @@ Once all the above dependencies have been installed, create a conda environment 
 	$ python test.py --datadir <path to input image directory > --resultdir < path to output directory >
 
 3. Next is getting the object masks using Detic model
+   
 ..  code-block:: bash 
 
 	$ cd Detic
-
-..  code-block:: bash 
-
 	$ python demo.py --config-file detic/configs/Detic_LCOCOI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.yaml --input ../images/*.jpg --output ../ObjectMasks --vocabulary custom --custom_vocabulary solar_array,air_conditioner,vent,box,sink --confidence-threshold 0.5 --opts MODEL.WEIGHTS Detic_LCOCOI21k_CLIP_SwinB_896b32_4x_ft4x_max-size.pth
 
 
-4. Next, to do stitiching of input images and masks
+1. Next, to do stitiching of input images and masks
+   
 ..  code-block:: bash 
 
 	$ python stitch.py -i images -o ObjectMasks -r RoofMasks -s $results_path/stitching_results
 
-5. Estimating the roof occupancy
-..  code-block:: bash 
+2. Estimating the roof occupancy
+   
+..  code-block:: bash  
 
    $ python calculateoccupancy.py -r ../RoofLayoutEstimationResults/stitching_results/stitched_roof_mask.jpg -o ../RoofLayoutEstimationResults/stitching_results/stitched_object_mask.jpg -t ../RoofLayoutEstimationResults/final_results/final_results_roof_layout_estimation.txt
 
@@ -137,6 +136,107 @@ Once all the above dependencies have been installed, create a conda environment 
 
 .. 	$ cd UVRSABI-Code/
 .. 	$ ./weights.sh
+
+**Building Tilt Estimation**
+
+**Approach 1 : Sensor Based Slope Estimation**
+
+1. We are using 2d Lidar and RTK GPS for getting the slope data for setup. 
+
+Instructions to run the code : 
+1. Clone and build the px4 and rplidar ros packages from source
+
+..  code-block:: bash 
+
+	$ roscore
+	$ roslaunch mavros px4.launch (buid )
+	$ roslaunch rplidar_ros rplidar_a2m12.launch
+	$ cd main_code/slope_estimation/scripts/
+	$ python3 slope_estimation.py
+
+
+2. Set the rosparam to record the specific reading at the slope
+
+..  code-block:: bash  
+
+	$ rosparam set /reading_trigger true
+
+
+**Approach 2 :  Base Slope Estimation**
+
+Instructions to run the code : 
+1. Run the script 
+
+..  code-block:: bash  
+
+	$ python3 fit_plane.py
+
+**Approach 3 : Clustering-Based Plane Segmentation Neural Network for Urban Scene Modeling**
+
+Requirements
+   * Python 3.8
+   * Pytorch 1.7.1
+   * scikit-learn 0.24.2
+   * Open3d 0.13.0
+
+**Dataset**
+
+We used Virtual KITTI Dataset from <a href="https://github.com/VisualComputingInstitute/vkitti3D-dataset" target="_blank">here</a>. 
+
+We used voxel downsampling to filter the dataset and extract man-made structures such as roads and buildings.
+
+Sample datasets are stored in the dataset folder
+
+**Installation** 
+
+..  code-block:: bash 
+
+	$ git clone https://github.com/jimmy9704/plane-segmentation-network.git
+	$ cd plane-segmentation-network/
+
+
+**Training**
+	Run the following command to start training
+
+..  code-block:: bash 
+
+	$ python train.py 
+
+Description of options
+
+..  code-block:: bash 
+
+	$ train(pointnet, dataset,train_loss, epochs=100,make_label=False, save=True)
+	$ make_labels(dataset,max_k=15,iteration=10)
+
+You can create a label for training PointNet by setting the ```make_label``` option to 'True'.
+
+You can change ```max_k``` and ```iteration```.
+
+```max_k``` is the maximum number that PointNet will estimate
+
+```iteration``` is the number of Hybrid-Kmeans iterations
+
+```iteration``` can be reduced to reduce time consumption but it might cause unstable results.
+
+**Test**
+Run the following command to start test
+
+..  code-block:: bash 
+
+	$ python test.py
+
+Description of options
+
+..  code-block:: bash 
+
+	$ valid(pointnet, dataset, save_num=99,iteration=5)
+
+```save_num``` is the check point to load for PointNet.
+
+
+Pre-trained checkpoints can be loaded by setting 'save_num' to 99.
+
 
 **Installation of GUI (Under Development)** 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
